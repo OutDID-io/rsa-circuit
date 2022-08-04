@@ -1,6 +1,6 @@
 pragma circom 2.0.3;
 
-include "../node_modules/circomlib/circuits/bitify.circom";
+include "../../sha256-var-circom/snark-jwt-verify/circomlib/circuits/bitify.circom";
 
 include "./bigint.circom";
 include "./bigint_func.circom";

@@ -1,24 +1,5 @@
-# The App
-The application is located at https://double-blind.xyz.
+# RSA Verifier Circuit for OutDID's verifier
 
-The documentation for the app is located at https://double-blind.xyz/docs
-
-# Development Instructions.
-
-(this section is under construction)
-
-## CIRCOM BUILD STEPS
-
-```
-https://github.com/iden3/snarkjs#7-prepare-phase-2
-wget https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_21.ptau
-# shasum pot21_final.ptau: e0ef07ede5c01b1f7ddabb14b60c0b740b357f70
-```
-
-
-```
-circom circuits/main/rsa_group_sig_verify.circom --wasm --r1cs
-snarkjs zkey new ./rsa_group_sig_verify.r1cs pot21_final.ptau public/rsa_group_sig_verify_0000.zkey
-snarkjs zkey export verificationkey public/rsa_group_sig_verify_0000.zkey public/rsa_group_sig_verify_0000.vkey.json
-cp rsa_group_sig_verify_js/rsa_group_sig_verify.wasm public
-```
+This is a fork of the [double-bilnd](https://github.com/doubleblind-xyz/double-blind/). What we're solely interested in is the RSA Verifier circuit as part of their solution. This fork applies a very lightweight patch over the original repository, namely:
+- In `rsa.circom`, we changed the `base_len` variable to 408. This corresponds to the RSA-SHA-256 digest variant. The original version supports RSA-SHA-512. 
+- In `rsa.circom`, `bigint.circom`, and `fp.circom`, we change all imports to `circomlib` circuits to point to the same copy of `circomlib` as our main OutDID verifier circuit. This is important because circom doesn't allow the same circuit to be loaded from two separate files, so we need to have one `circomlib` copy per project. 
