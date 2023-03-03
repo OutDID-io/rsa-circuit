@@ -58,7 +58,7 @@ template RSAPad(n, k) {
     signal input base_message[k];
     signal output padded_message[k];
 
-    var base_len = 408;
+    var base_len = 280;
 
     signal padded_message_bits[n*k];
 
