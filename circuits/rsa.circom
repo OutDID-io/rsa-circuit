@@ -53,12 +53,17 @@ template FpPow65537Mod(n, k) {
 //   padded message === base_message[:base_len] + [0x00] + [0xff] * pad_len + [0x01]
 // See RFC 8017 Section 9.2 (https://datatracker.ietf.org/doc/html/rfc8017#section-9.2).
 // Base length is hardcoded at 664, which corresponds to the RSA-SHA-512 digest variant.
-template RSAPad(n, k) {
+template RSAPad(DIGEST_ALG, n, k) {
     signal input modulus[k];
     signal input base_message[k];
     signal output padded_message[k];
 
-    var base_len = 408;
+    var base_len;
+    if (DIGEST_ALG == 0) {
+        base_len = 408;
+    } else if (DIGEST_ALG == 1) {
+        base_len = 280;
+    }
 
     signal padded_message_bits[n*k];
 
@@ -125,12 +130,12 @@ template RSAPad(n, k) {
 // Base message is the DER-encoded hashed message.
 // Assumes the modulus and base_message are well-formed and range-checked (or
 // otherwise trustworthy).
-template RSAVerify65537(n, k) {
+template RSAVerify65537(DIGEST_ALG, n, k) {
     signal input signature[k];
     signal input modulus[k];
     signal input base_message[k];
 
-    component padder = RSAPad(n, k);
+    component padder = RSAPad(DIGEST_ALG, n, k);
     for (var i = 0; i < k; i++) {
         padder.modulus[i] <== modulus[i];
         padder.base_message[i] <== base_message[i];
